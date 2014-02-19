@@ -1,0 +1,1 @@
+$(function(){function a(){d.show(),c.width("10%"),c.animate({width:"100%"},200,function(){}),e.hide(),b.hide(),c.focus()}var b=$("#topsrh-icon"),c=$("#topsrh-q"),d=$("#topsrh-box"),e=$("#nav");b.click(function(){return a(),c.blur(function(){d.hide(),e.show(),b.show()}),!1})});
