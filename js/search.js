@@ -1,18 +1,18 @@
 
 //图片onload后重新计算layout
-$(function(){
-    var imgs = $("img");
-    for(var i=0,len=imgs.length;i<len;i++){
-        var container = document.querySelector('#container');
-        var msnry = Masonry.data( container );
-        var img_length = imgs.length - 1;
-        if(i==len-1){
-        	imgs[i].onload = function(){
-        		msnry.layout();	           
-        	}	
-        }     
-    }
-});
+//$(function(){
+//    var imgs = $("img");
+//    for(var i=0,len=imgs.length;i<len;i++){
+//        var container = document.querySelector('#container');
+//        var msnry = Masonry.data( container );
+//        var img_length = imgs.length - 1;
+//        if(i==len-1){
+//        	imgs[i].onload = function(){
+//        		msnry.layout();
+//        	}
+//        }
+//    }
+//});
 
 var showcaseInfo = [];
 
