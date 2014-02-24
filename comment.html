@@ -14,7 +14,7 @@
                 <link rel="stylesheet" href="css/cases.min.css">
                 <link rel="stylesheet" href="css/search.css">
                 <script type="text/javascript" src="js/jquery.min.js"></script>
-
+                <script type="text/javascript" src="js/search.js"></script>
         </head>
 
         <body>
@@ -22,8 +22,11 @@
                         <img  class="back" src="assets/back.png"/>
                 </div>
 
-                <div class="feedback_form">
-                        <button id="send_feedback">提交</button>
+                <div class="feedback_form" align="center">
+                        <div><input type="text"  id="user_email"  placeholder="Email"/></div>
+                        <div id="error_alert"></div>
+                        <div><textarea id="feedback_content" maxlength="200" placeholder="说点什么！(字数200)"></textarea></div>
+                        <div><button id="send_feedback">提交</button></div>
                 </div>
 
         </body>
@@ -32,9 +35,10 @@
                 $(".back").click(function(){
                         window.location.href = "/index.html";
                 });
+
+                $("#user_email").blur(function(){isEmail();});
+                $("#feedback_content").blur(function(){contentIsEmpty();});
+                $("#send_feedback").click(function(){send_feedback();});
         </script>
-
-
-
-
+        
 </html>

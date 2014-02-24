@@ -13,7 +13,6 @@
         <link rel="stylesheet" href="css/global.min.css">
         <link rel="stylesheet" href="css/cases.min.css">
         <link rel="stylesheet" href="css/search.css">
-        <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/masonry-docs.min.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/topsrh.min.js"></script>
@@ -57,9 +56,8 @@
 
     	</script>
 
-		<div id="top_wrapper">
-			<!--<div id="container" class="js-masonry" >-->
-            <div id="container" class="js-masonry">
+		<div id="top_wrapper" align="center">
+			<div id="container" class="js-masonry" algin="center">
 			</div>
 		</div>
 
@@ -67,26 +65,30 @@
 			//从后台获取showcase信息列表
 			getShowcaseInfo();
 
+			document.getElementById("container").innerHTML = "";
+
 			//前台展现信息列表
 			for(i=0;i<showcaseInfo.length;i++){
+
 				document.getElementById("container").innerHTML = document.getElementById("container").innerHTML+"<div class='hero-item has-example is-hidden' id='"+showcaseInfo[i][0]+"'><a href='"+showcaseInfo[i][1]+"'><p class='example-title'>"+showcaseInfo[i][2]+"</p><img class='title-icon' src='"+showcaseInfo[i][3]+"' /><img class='title-tilt' src='"+showcaseInfo[i][4]+"' /></a><a class='gotoSearch' href='"+showcaseInfo[i][5]+"'>查看搜索展现</a></div>";	
 			}
 
 			//展现搜索输入框
 			$("#search").click(function(){showSearchContainer();});
 
-			// $("#setting").click(function(){showSettingContainer();});
+			$("#setting").click(function(){showSettingContainer();});
+
+			var container = document.querySelector('#container');
+                imagesLoaded( container, function() {
+                var msnry = new Masonry( container, {
+                    //isOriginLeft:false,
+                    gutterWidth : 20,
+                })
+            })
 
 		</script>
 
 		<script type="text/javascript">
-            var container = document.querySelector('#container');
-                imagesLoaded( container, function() {
-                var msnry = new Masonry( container, {
-                    isOriginLeft:false
-                })
-            })
-
 			//实现搜索输入框的输入提示js类
 			function oSearchSuggest(searchFuc){
 				var input = $('#gover_search_key');

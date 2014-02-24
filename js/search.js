@@ -1,20 +1,10 @@
 
-//图片onload后重新计算layout
-//$(function(){
-//    var imgs = $("img");
-//    for(var i=0,len=imgs.length;i<len;i++){
-//        var container = document.querySelector('#container');
-//        var msnry = Masonry.data( container );
-//        var img_length = imgs.length - 1;
-//        if(i==len-1){
-//        	imgs[i].onload = function(){
-//        		msnry.layout();
-//        	}
-//        }
-//    }
-//});
-
 var showcaseInfo = [];
+
+// showcaseInfo.push(["1","http://zhilianzhaopin.duapp.com","智联招聘","assets/zhilianzhaoping_logo.png","assets/zhilianzhaopin.jpg","http://zhilianzhaopin.duapp.com","zhilianzhaopin"]);
+// showcaseInfo.push(["2","http://datarecovery.duapp.com","联想3C服务","assets/lianxiang3c_logo.png","assets/lianxiang3c.jpg","http://datarecovery.duapp.com","lianxiang3cfuwu"]);
+// showcaseInfo.push(["2","http://datarecovery.duapp.com","联想3C服务","assets/lianxiang3c_logo.png","assets/lianxiang3c.jpg","http://datarecovery.duapp.com","lianxiang3cfuwu"]);
+// showcaseInfo.push(["2","http://datarecovery.duapp.com","联想3C服务","assets/lianxiang3c_logo.png","assets/lianxiang3c.jpg","http://datarecovery.duapp.com","lianxiang3cfuwu"]);
 
 //获取showcase列表
 var getShowcaseInfo = function(){
@@ -24,6 +14,8 @@ var getShowcaseInfo = function(){
 	   	async:false,
 	   	dataType: "json",
 	   	success: function(data){
+	  //  		showcaseInfo.push("1","http://zhilianzhaopin.duapp.com","智联招聘","assets/zhilianzhaoping_logo.png","assets/zhilianzhaopin.jpg","http://zhilianzhaopin.duapp.com","zhilianzhaopin");
+			// showcaseInfo.push("2","http://datarecovery.duapp.com","联想3C服务","assets/lianxiang3c_logo.png","assets/liangxiang3c.jpg","http://datarecovery.duapp.com","lianxiang3cfuwu");
 			for(i=0;i<data.length;i++){
 				showcaseInfo.push([data[i].id,data[i].link,data[i].name,data[i].icon,data[i].pic,data[i].searchlink,data[i].pinyin]);
 			}	
@@ -69,15 +61,12 @@ var searchShowCaseInArray = function(caseName){
     if(caseName){
         var flag = false;
         for(i=0;i<showcaseInfo.length;i++){
-            if(caseName == showcaseInfo[i][2]){ 
-            	console.log("one:"+ document.body.scrollTop);              
+            if(caseName == showcaseInfo[i][2]){              
                 window.location.href = window.location.pathname+"#"+showcaseInfo[i][0];
                 document.getElementById("search_container").style.display = "none";
                 document.getElementById("top_wrapper").style.marginTop= "50px";
-                console.log("two:"+ document.body.scrollTop); 
-                console.log("there:"+ (document.body.scrollTop-80)); 
 
-                // document.body.scrollTop = (document.body.scrollTop-80)+"px";
+                document.body.scrollTop = (document.body.scrollTop-90);
                 flag = true;
                 break; 
             }    
@@ -91,4 +80,78 @@ var searchShowCaseInArray = function(caseName){
                               
 };
 
+window.onload = function(){
+	var tid = $(location.hash.toString());
+	if(tid.length){
+		setTimeout(function(){
+			// console.log(tid.position().top);
+			$("body").scrollTop(tid.position().top||0);
+		},600);
+		
+	}	
+}
+
+//对电子邮件的验证
+var isEmail = function(){
+	var userEmail = document.getElementById("user_email").value;
+	var eMailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+
+	if(!userEmail){
+		document.getElementById("error_alert").style.display = "block";
+		document.getElementById("error_alert").innerHTML = "Email不能为空！";	
+		document.getElementById("user_email").focus();
+	}else{
+		if(!eMailReg.test(userEmail)){
+			document.getElementById("error_alert").style.display = "block";
+			document.getElementById("error_alert").innerHTML = "请输入有效的Email！";
+			document.getElementById("user_email").focus();
+		}else{
+			document.getElementById("error_alert").style.display = "none";
+		}
+	}	
+
+}
+
+var contentIsEmpty = function(){
+	var content = document.getElementById("feedback_content").value;
+
+	if(!content){
+		document.getElementById("error_alert").style.display = "block";
+		document.getElementById("error_alert").innerHTML = "说点什么吧！";	
+		document.getElementById("user_email").focus();
+	}else{
+		document.getElementById("error_alert").style.display = "none";
+	}
+}
+
+var send_feedback = function(){
+	var userEmail = document.getElementById("user_email").value;
+	var content = document.getElementById("feedback_content").value;
+
+	data = {
+		email:userEmail,
+		content:content
+	};
+
+	if(userEmail && content){
+		document.getElementById("error_alert").style.display = "none";
+
+		$.ajax({
+		   	type: "POST",
+		   	url: "http://lightappshowcaseserver.duapp.com/submitComment.php",
+		   	data:data,
+		   	async:false,
+		   	dataType: "json",
+		   	success: function(data){
+				if(data == 1){
+					window.location.href = "/index.html";
+				}	
+		   	}
+ 		});
+	}else{
+		document.getElementById("error_alert").style.display = "block";
+		document.getElementById("error_alert").innerHTML = "Email或者内容不能为空！";	
+	}
+		
+}
 
