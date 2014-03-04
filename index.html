@@ -6,39 +6,30 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>Lightapp Show</title>
 		<meta name="description" content="轻应用案例">
-		<meta content="target-densitydpi=high-dpi,width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" name="viewport" />
+		<meta content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" name="viewport" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="baidu-tc-cerfication" content="4ec01b515167e5461678ffad12753169" />
 
 		<link rel="stylesheet" href="css/masonry-docs.css">
         <link rel="stylesheet" href="css/global.min.css">
         <link rel="stylesheet" href="css/cases.min.css">
-        <link rel="stylesheet" href="css/search.css">
+        <link rel="stylesheet" href="css/lightshow.css">
         <script type="text/javascript" src="js/masonry-docs.min.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/topsrh.min.js"></script>
         <script type="text/javascript" src="js/jquery.qrcode-0.7.0.min.js"></script>
         <script type="text/javascript" src="js/cases.min.js"></script>
-        <script type="text/javascript" src="js/search.js"></script>
-   
+   		
 	</head>
 
 	<body>
 		<div class="mobile_header">
 			<img class="light_logo" src="assets/lightapp_sign.png"/>
   			<img id="setting" src="assets/setting.png" />
-  			<img id="search" src="assets/search.png" />
+  			<!-- <img id="search" src="assets/search.png" /> -->
 		</div>
 
-		<div class="gover_search" id="search_container" style="display:none">  
-	        <div class="gover_search_form clearfix">  
-	            <input type="text" class="input_search_key" id="gover_search_key" placeholder="请输入关键词直接搜索" />  
-<!-- 	            <button type="submit" class="search_btn">搜索</button>  --> 
-	            <div class="search_suggest" id="gov_search_suggest">  
-	                <ul>  
-	                </ul>  
-	            </div>  
-	        </div>  
-    	</div>
+		
 
     	<div id="setting_container" style="display:none">
 			<ul>  
@@ -56,36 +47,74 @@
 
     	</script>
 
-		<div id="top_wrapper" align="center">
-			<div id="container" class="js-masonry" algin="center">
+		<div id="top_wrapper" >
+			<div class="hd">
+                <ul>
+                        <li class="nomal activeTab first" tabId="all_showcase">全部</li>
+                        <li class="nomal"  tabId="new_showcase">最新</li>
+                        <li class="nomal "  tabId="hot_showcase">最热</li>
+                        <li class="nomal end"  tabId="search_container">搜索</li>
+                </ul>
+            </div>						
+			<div id="all_showcase" class="js-masonry" style="display:block">
+
 			</div>
+
+			<div id="new_showcase" class="js-masonry" style="display:none">
+
+			</div>
+
+			<div id="hot_showcase" class="js-masonry" style="display:none">
+
+			</div>
+			<div id="search_container" style="display:none">
+				<div class="gover_search">  
+			        <div class="gover_search_form clearfix">  
+			            <input type="text" class="input_search_key" id="gover_search_key" placeholder="请输入关键词直接搜索" />  
+			            <img id="submit" src="assets/search.png" /> 
+			            <div class="search_suggest" id="gov_search_suggest">  
+			                <ul>  
+			                </ul>  
+			            </div>  
+			        </div>  
+		    	</div>
+
+				<div id="search_showcase" class="js-masonry" style="top: 65px;">
+
+				</div>
+
+			</div>
+			<div id='load_more' style="display:none"></div>
+			<div id='alert_move_down' style="display:none">到底了哦！</div>
 		</div>
 
+		<script type="text/javascript" src="js/lightshow.js"></script>
+
 		<script type="text/javascript">
-			//从后台获取showcase信息列表
-			getShowcaseInfo();
+			
 
-			document.getElementById("container").innerHTML = "";
-
-			//前台展现信息列表
-			for(i=0;i<showcaseInfo.length;i++){
-
-				document.getElementById("container").innerHTML = document.getElementById("container").innerHTML+"<div class='hero-item has-example is-hidden' id='"+showcaseInfo[i][0]+"'><a href='"+showcaseInfo[i][1]+"'><p class='example-title'>"+showcaseInfo[i][2]+"</p><img class='title-icon' src='"+showcaseInfo[i][3]+"' /><img class='title-tilt' src='"+showcaseInfo[i][4]+"' /></a><a class='gotoSearch' href='"+showcaseInfo[i][5]+"'>查看搜索展现</a></div>";	
+			if(window.localStorage){
+				setLocalstorage("current_page",1);
+				setLocalstorage("current_new_page",1);
+				setLocalstorage("current_hot_page",1);
+				setLocalstorage("current_active_tab","all_showcase");
 			}
 
+			//从后台获取showcase信息列表
+			getShowcaseInfo(1);
+			getNewShowcaseInfo(1);
+			getHotShowcaseInfo(1);
+
+			getAllShowcaseForSearch();
+
 			//展现搜索输入框
-			$("#search").click(function(){showSearchContainer();});
-
+			// $("#search").click(function(){showSearchContainer();});
 			$("#setting").click(function(){showSettingContainer();});
-
-			var container = document.querySelector('#container');
-                imagesLoaded( container, function() {
-                var msnry = new Masonry( container, {
-                    //isOriginLeft:false,
-                    gutterWidth : 20,
-                })
-            })
-
+			$("#submit").click(function(){
+				searchShowCaseInArray($('#gover_search_key').val());
+				$('#gov_search_suggest').hide();
+			});
+			$("#load_more").click(function(){loadMoreCase()});
 		</script>
 
 		<script type="text/javascript">
@@ -196,9 +225,10 @@
 			function sendKeyWordToBack(keyword){						 
 				//以下为根据输入返回搜索结果的模拟效果代码,实际数据由后台返回
 				var aData = [];
-				for(i=0;i<showcaseInfo.length;i++){
-					if(showcaseInfo[i][2].indexOf(keyword) != -1 || showcaseInfo[i][6].indexOf(keyword) != -1){
-						aData.push(showcaseInfo[i][2]);
+				// alert(showcaseInfoForSearch);
+				for(i=0;i<showcaseInfoForSearch.length;i++){
+					if(showcaseInfoForSearch[i][0].indexOf(keyword) != -1 || showcaseInfoForSearch[i][1].indexOf(keyword) != -1){
+						aData.push(showcaseInfoForSearch[i][0]);
 					}
 				}
 				//将返回的数据传递给实现搜索输入框的输入提示js类

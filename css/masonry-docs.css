@@ -798,7 +798,7 @@ code .at_rule { color: #088; }
 .hero-item,
 .hero-masonry .grid-sizer {
   width: 45%; /* juse a lil under  47 */
-  margin: 3% 2%;
+  /*margin: 3% 2%;*/
   /*float: middle ;*/
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,.3);
@@ -838,6 +838,9 @@ code .at_rule { color: #088; }
 }
 
 .hero-item.has-example {
+  margin-left: 4%;
+  margin-top:8px;
+  margin-bottom: 8px;
 }
 
 .hero-item.has-example a {
@@ -1515,45 +1518,4 @@ div.param {
 
 }
 
-.mobile_header {
-    position: fixed;
-    z-index: 2000;
-    top: 0;
-    margin: 0;
-    width: 100%;
-    height: 50px;
-    border-top: solid 1px #d6d6d6;
-    border-bottom: solid 3px #d6d6d6;
-    /*background: #fffcda*/
-    background-image: url(../assets/bg.gif); 
-    background-repeat:repeat;
-
-}
-
-.light_logo{
-  margin-left:15px;
-  height: 40px;
-  margin-top: 5px;
-}
-
-.back{
-  margin-left:10px;
-  height: 30px;
-  margin-top: 10px;
-}
-
-#search,#setting{
-  float:right; 
-  margin-right: 15px;
-  height: 40px; 
-  margin-top: 5px;
-}
-
-
-
-#top_wrapper{
-  width: 100%;
-  margin-left: 1.4%;
-  margin-top: 50px;
-}
 

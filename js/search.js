@@ -98,15 +98,18 @@ var isEmail = function(){
 
 	if(!userEmail){
 		document.getElementById("error_alert").style.display = "block";
-		document.getElementById("error_alert").innerHTML = "Email不能为空！";	
-		document.getElementById("user_email").focus();
+		document.getElementById("error_alert").innerHTML = "请您输入Email！";	
+		// document.getElementById("user_email").focus();
+		return false;
 	}else{
 		if(!eMailReg.test(userEmail)){
 			document.getElementById("error_alert").style.display = "block";
 			document.getElementById("error_alert").innerHTML = "请输入有效的Email！";
-			document.getElementById("user_email").focus();
+			// document.getElementById("user_email").focus();
+			return false;
 		}else{
 			document.getElementById("error_alert").style.display = "none";
+			return true;
 		}
 	}	
 
@@ -118,9 +121,11 @@ var contentIsEmpty = function(){
 	if(!content){
 		document.getElementById("error_alert").style.display = "block";
 		document.getElementById("error_alert").innerHTML = "说点什么吧！";	
-		document.getElementById("user_email").focus();
+		// document.getElementById("user_email").focus();
+		return false;
 	}else{
 		document.getElementById("error_alert").style.display = "none";
+		return true;
 	}
 }
 
@@ -132,8 +137,7 @@ var send_feedback = function(){
 		email:userEmail,
 		content:content
 	};
-
-	if(userEmail && content){
+	if(isEmail() && contentIsEmpty()){
 		document.getElementById("error_alert").style.display = "none";
 
 		$.ajax({
@@ -143,14 +147,13 @@ var send_feedback = function(){
 		   	async:false,
 		   	dataType: "json",
 		   	success: function(data){
-				if(data == 1){
+				if(data.res){
 					window.location.href = "/index.html";
+				}else{
+					alert(data.msg);
 				}	
 		   	}
  		});
-	}else{
-		document.getElementById("error_alert").style.display = "block";
-		document.getElementById("error_alert").innerHTML = "Email或者内容不能为空！";	
 	}
 		
 }

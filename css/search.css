@@ -38,6 +38,7 @@
 	font-size: 14px;
 	padding: 0px 5px;
 	width: 90%;
+	border-radius: 4px;
 }
 
 #error_alert{
@@ -55,6 +56,7 @@
 	height:200px;
 	padding:10px 5px;
 	line-height: 25px;
+	border-radius: 4px;
 }
 
 #send_feedback{
