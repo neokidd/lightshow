@@ -12,15 +12,19 @@
 
 		<link rel="stylesheet" href="css/masonry-docs.css">
         <link rel="stylesheet" href="css/global.min.css">
-        <link rel="stylesheet" href="css/cases.min.css">
         <link rel="stylesheet" href="css/lightshow.css">
         <script type="text/javascript" src="js/masonry-docs.min.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
-        <script type="text/javascript" src="js/topsrh.min.js"></script>
-        <script type="text/javascript" src="js/jquery.qrcode-0.7.0.min.js"></script>
-        <script type="text/javascript" src="js/cases.min.js"></script>
+
    		
 	</head>
+
+
+	<script type="text/javascript">
+		var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+		document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fc61f0bfd7416766fe8b98b5a24f902dc' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+
 
 	<body>
 		<div class="mobile_header">
@@ -84,7 +88,7 @@
 				</div>
 
 			</div>
-			<div id='load_more' style="display:none"></div>
+			<div id='load_more'></div>
 			<div id='alert_move_down' style="display:none">到底了哦！</div>
 		</div>
 
@@ -98,6 +102,7 @@
 				setLocalstorage("current_new_page",1);
 				setLocalstorage("current_hot_page",1);
 				setLocalstorage("current_active_tab","all_showcase");
+				setLocalstorage("isInit",true);
 			}
 
 			//从后台获取showcase信息列表
@@ -114,7 +119,7 @@
 				searchShowCaseInArray($('#gover_search_key').val());
 				$('#gov_search_suggest').hide();
 			});
-			$("#load_more").click(function(){loadMoreCase()});
+			// $("#load_more").click(function(){loadMoreCase()});
 		</script>
 
 		<script type="text/javascript">

@@ -22,16 +22,13 @@ var getId = function(key){
 }
 
 var showLoadButton = function(page,page_num){
-	if(page < page_num ){
-		getId("alert_move_down").style.display = "none";
-		getId("load_more").style.display = "block";
-		getId("load_more").innerHTML = "加载更多";
-	}
-
-	if(page == page_num){
+	if(page >= page_num){
 		getId("load_more").style.display = "none";
 		getId("alert_move_down").style.display = "block";
-		// setTimeout(function(){getId("alert_move_down").style.display = "none";},1000);
+	}else{
+		getId("load_more").style.display = "block";
+		getId("load_more").innerHTML = "上拉加载";
+		getId("alert_move_down").style.display = "none";
 	}
 }
 
@@ -53,8 +50,30 @@ var getAllShowcaseForSearch = function(){
 }
 
 
+//点击统计
+var showcaseClickCount = function(id,link){
+	data={
+		id: id,
+	}
+
+	$.ajax({
+	   	type: "POST",
+	   	url: "http://lightappshowcaseserver.duapp.com/stats.php",
+	   	async:false,
+	   	data:data,
+	   	dataType: "json",
+	   	success: function(data){
+	   		// console.log("djflakjl!");
+	   	}
+	});
+
+	window.location.href= link;
+}
+
+
 //获取showcase列表
 var getShowcaseInfo = function(page){
+
 	data = {
 		num:per_page_num,
 		page:page,
@@ -63,15 +82,13 @@ var getShowcaseInfo = function(page){
 
 	$.ajax({
 	   	type: "POST",
-	   	// url: "http://172.22.150.253/lightappshowcase/caseInfo.php",
 	   	url: "http://lightappshowcaseserver.duapp.com/caseInfo.php",
 	   	async:false,
 	   	data:data,
 	   	dataType: "json",
 	   	success: function(data){
 			for(i=0;i<data.list.length;i++){
-//				showcaseInfo.push([data[i].id,data[i].link,data[i].name,data[i].icon,data[i].pic,data[i].searchlink,data[i].pinyin]);
-				getId("all_showcase").innerHTML = getId("all_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='"+data.list[i].link+"'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
+				getId("all_showcase").innerHTML = getId("all_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='javascript:;' onclick='showcaseClickCount("+data.list[i].id+",\""+data.list[i].link+"\")'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
 			}
 			info_page_num = data.num;
 
@@ -79,17 +96,22 @@ var getShowcaseInfo = function(page){
 			var msnry = new Masonry(all_showcase);
 			imagesLoaded(all_showcase, function() {
 				msnry.layout();
-			});
 
-			if(getLocalstorage("current_active_tab") == "all_showcase"){
-				showLoadButton(page,data.num);
-			}
+				if(getLocalstorage("current_active_tab")=="all_showcase"){
+					showLoadButton(page,info_page_num);
+				}
+
+				setLocalstorage("current_page",parseInt(getLocalstorage("current_page"))+1);
+			});
+			
+
+						
 	   	}
  	});	  
 }
 
 
-
+//获取最新列表
 var getNewShowcaseInfo = function(page){
 	data = {
 		order:"ct",
@@ -108,7 +130,9 @@ var getNewShowcaseInfo = function(page){
 	   	success: function(data){
 			for(i=0;i<data.list.length;i++){
 //				showcaseInfo.push([data[i].id,data[i].link,data[i].name,data[i].icon,data[i].pic,data[i].searchlink,data[i].pinyin]);
-				getId("new_showcase").innerHTML = getId("new_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='"+data.list[i].link+"'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
+				getId("new_showcase").innerHTML = getId("new_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='javascript:;' onclick='showcaseClickCount("+data.list[i].id+",\""+data.list[i].link+"\")'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
+
+				// getId("new_showcase").innerHTML = getId("new_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='"+data.list[i].link+"'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
 			}
 
 			new_page_num = data.num;
@@ -117,17 +141,20 @@ var getNewShowcaseInfo = function(page){
 			var msnry = new Masonry(new_showcase);
 			imagesLoaded(new_showcase, function() {
 				 msnry.layout();
+				 if(getLocalstorage("current_active_tab")=="new_showcase"){
+					 showLoadButton(page,new_page_num);
+				}
+				setLocalstorage("current_new_page",parseInt(getLocalstorage("current_new_page"))+1);
 			});
 
-			if(getLocalstorage("current_active_tab") == "new_showcase"){
-				showLoadButton(page,data.num);
-			}
+			
 	   	}
  	});	  
 }
 
-
+//获取最热
 var getHotShowcaseInfo = function(page){
+
 	data = {
 		type:1,
 		num:per_page_num,
@@ -145,7 +172,9 @@ var getHotShowcaseInfo = function(page){
 	   	success: function(data){
 			for(i=0;i<data.list.length;i++){
 //				showcaseInfo.push([data[i].id,data[i].link,data[i].name,data[i].icon,data[i].pic,data[i].searchlink,data[i].pinyin]);
-				getId("hot_showcase").innerHTML = getId("hot_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='"+data.list[i].link+"'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
+				getId("hot_showcase").innerHTML = getId("hot_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='javascript:;' onclick='showcaseClickCount("+data.list[i].id+",\""+data.list[i].link+"\")'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
+
+				// getId("hot_showcase").innerHTML = getId("hot_showcase").innerHTML+"<div class='hero-item has-example is-hidden' id='"+data.list[i].id+"'><a href='"+data.list[i].link+"'><p class='example-title'>"+data.list[i].name+"</p><img class='title-icon' src='"+data.list[i].icon+"' /><img class='title-tilt' src='"+data.list[i].pic+"' /></a><a class='gotoSearch' href='"+data.list[i].searchlink+"'>查看搜索展现</a></div>";
 			}
 
 			hot_page_num = data.num;
@@ -154,12 +183,12 @@ var getHotShowcaseInfo = function(page){
 			var msnry = new Masonry(hot_showcase);
 			imagesLoaded(hot_showcase, function() {
 				msnry.layout();
+				if(getLocalstorage("current_active_tab")=="hot_showcase"){
+					showLoadButton(page,hot_page_num);
+				}
+				
+				setLocalstorage("current_hot_page",parseInt(getLocalstorage("current_hot_page"))+1);
 			});
-
-
-			if(getLocalstorage("current_active_tab") == "hot_showcase"){
-				showLoadButton(page,data.num);
-			}
 	   	}
  	});	  
 }
@@ -217,19 +246,6 @@ var searchShowCaseInArray = function(caseName){
     }
                               
 };
-
-window.onload = function(){
-	var tid = $(location.hash.toString());
-	if(tid.length){
-		setTimeout(function(){
-			// console.log(tid.position().top);
-			$("body").scrollTop(tid.position().top||0);
-		},600);
-		
-	}
-
-	setTimeout(function(){},500);	
-}
 
 //对电子邮件的验证
 var isEmail = function(){
@@ -299,8 +315,7 @@ var send_feedback = function(){
 }
 
 
-//tab js
-
+//tab切换响应
 function tabClick(){
     if($(this).hasClass('activeTab')) 
             return;
@@ -381,20 +396,31 @@ var loadMoreCase = function(){
 		page_num = hot_page_num;
 	}
 
-	if(current_page < page_num){
+	if(current_page < page_num || current_page == page_num){
 		if(getLocalstorage("current_active_tab") == "all_showcase"){
-			getShowcaseInfo(parseInt(current_page)+1);
-			setLocalstorage("current_page",parseInt(current_page)+1);
+			getShowcaseInfo(parseInt(current_page));
+			
 		}else if(getLocalstorage("current_active_tab") == "new_showcase"){
-			getNewShowcaseInfo(parseInt(current_page)+1);
-			setLocalstorage("current_new_page",parseInt(current_page)+1);
+			getNewShowcaseInfo(parseInt(current_page));
+			
 		}else{
-			getHotShowcaseInfo(parseInt(current_page)+1);
-			setLocalstorage("current_hot_page",parseInt(current_page)+1);
+			getHotShowcaseInfo(parseInt(current_page));
+			
 		}
-		
 	}
-
 }
+
+//上拉加载
+$(document).ready(function(){
+    var range = 5;             //距下边界长度/单位px
+    $(window).scroll(function(){
+        var totalHeight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+        // console.log($(document).height() + "-----" +totalHeight);
+        if(($(document).height()-range) <= totalHeight){
+           loadMoreCase();
+        }
+    });
+});
+
 
 
